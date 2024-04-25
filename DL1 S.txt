@@ -1,0 +1,79 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import tensorflow as tf
+from tensorflow import keras
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+df = pd.read_csv("https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv")
+
+# Display the first 10 rows of the dataset
+df.head(n=10)
+
+# Get statistical summary of the dataset
+df.describe()
+
+# Get information about the dataset like data types and non-null counts
+df.info()
+
+# Check for missing values in the dataset
+df.isnull().sum()
+
+# Separate features (x) and target variable (y)
+x = df.drop('medv', axis=1)
+y = df['medv']
+
+# Split the dataset into training and testing sets
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=234)
+
+# Standardize the features using StandardScaler
+model1 = StandardScaler()
+x_train_scaled = model1.fit_transform(x_train)
+x_test_scaled = model1.transform(x_test)
+
+# Import necessary modules for building the neural network model
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+
+# Initialize the sequential model
+model2 = Sequential()
+
+# Add layers to the model
+model2.add(Dense(512, activation='relu', input_dim=13))
+model2.add(Dense(256, activation='relu'))
+model2.add(Dense(128, activation='relu'))
+model2.add(Dense(64, activation='relu'))
+model2.add(Dense(32, activation='relu'))
+model2.add(Dense(16, activation='relu'))
+model2.add(Dense(1))  # Output layer
+
+# Display model summary
+print(model2.summary())
+
+# Compile the model
+model2.compile(optimizer='adam', loss='mean_squared_error')
+
+# Fit the model to the training data
+model_fit = model2.fit(x_train_scaled, y_train, epochs=50, validation_split=0.5, verbose=1)
+
+# Evaluate the model on the test data
+res = model2.evaluate(x_test_scaled, y_test)
+res
+
+# Make predictions on the test data
+predictions = model2.predict(x_test_scaled)
+
+# Display actual vs predicted values in a DataFrame
+results = pd.DataFrame({'Actual': y_test, 'Predicted': predictions.flatten()})
+print(results)
+
+# Plot actual vs predicted values
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x='Actual', y='Predicted', data=results, alpha=0.7)
+plt.title('Actual vs Predicted Values')
+plt.xlabel('Actual Values')
+plt.ylabel('Predicted Values')
+plt.show()
