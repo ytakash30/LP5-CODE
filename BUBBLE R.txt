@@ -59,3 +59,10 @@ int main()
 
 return 0;
 }
+
+
+omp_set_num_thread(<value>)
+
+omp_get_num_threads()
+
+omp_set_num_thread(<value>)
