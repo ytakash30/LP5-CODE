@@ -62,3 +62,10 @@ int main(){
     cout<<" sequential time "<<sequential_bubble_sort_time<<endl;
     cout<<"parallel time "<<parallel_time<<endl;
 }
+
+
+omp_set_num_thread(<value>)
+
+omp_get_num_threads()
+
+omp_set_num_thread(<value>)
